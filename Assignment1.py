@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 #bulletpoint 1.
 # path to the downloaded data folder, e.g. 'Downloads/Region_Mobility_Report_CSVs/'
 
-data_dir = '\\Users\\loran\\Desktop\\Mechanical engineering - Delft\Master\\2nd - Q1\\Programming\\Region_Mobility_Report_CSVs'
+data_dir = (r'C:\Users\loran\Desktop\Mechanical engineering - Delft\Master\2nd - Q1\Programming\Region_Mobility_Report_CSVs')
 country_code = 'NL'
 
 #bulletpoint 2.
@@ -42,72 +42,65 @@ else:
 #bulletpoint 3.
 
 df_2020 = pd.read_csv(r'C:\Users\loran\Desktop\Mechanical engineering - Delft\Master\2nd - Q1\Programming\2020_NL_Region_Mobility_Report.csv')
-a = print(df_2020.iloc[0:10, :])
+df_2020 = pd.DataFrame(df_2020)
+print(df_2020.iloc[0:10, :])
 
 
 #bulletpoint 4.
 
-df_2021 = requests.get("http://mirrors-dev.citg.tudelft.nl:8083/google-mobility-data/2021/NE")
-if df_2021.status_code == 200:
-    print('Success!')
-elif df_2021.status_code == 404:
-    print('Not Found.')
+df_2021 = pd.read_csv("http://mirrors-dev.citg.tudelft.nl:8083/google-mobility-data/2021/NL")
+df_2021 = pd.DataFrame(df_2021)
+print(df_2021.iloc[0:10, :])
 
-with open("df_2021.txt", "w") as f:
-    f.write(df_2021.text)
 
-file = open("df_2021.txt")
-lines_to_print = [0,1,2,3,4,5,7,8,9,10,11]
-for index, line in enumerate(file):
-  if ( index in lines_to_print):
-    print(line)
 
-# #bulletpoint 5. merge 2 dataframes how is this possible?
-# df1 = pd.DataFrame(df_2020)
-# df2 = pd.DataFrame(df_2021)
-# Merged = df1.merge(df2)
+#bulletpoint 5. merge 2 dataframes how is this possible?
+df = pd.concat([df_2020,df_2021])
+print(df.iloc[-10:])
 
 #bulletpoint 6 just with standard df 2020
-df_nation = df_2020[['country_region_code','country_region']]
-df_nation = df_nation.iloc[0:10,:]
-df_province = df_2020[["sub_region_1"]]
-print(df_province)
-df_province = df_province.iloc[0:10,:]
-df_city= df_2020[["sub_region_2"]]
-df_city = df_city.iloc[0:10,:]
+df_nation = df[['country_region_code','country_region']]
+df_nation = df_nation.iloc[0:5:]
+
+df_province = df[["sub_region_1"]]
+df_province = df_province.iloc[0:5:]
+
+df_city= df[["sub_region_2"]]
+df_city = df_city.iloc[0:5:]
+
 print(df_nation.isna())
 print(df_province.isna())
 print(df_city.isna())
 
 
 #bulletpoint 7
-df_nation.to_csv (r'C:\Users\loran\PycharmProjects\TIL6010-Assignments\data_dir\processed_data\df_nation.to_csv', index = False, header=True)
-df_province.to_csv (r'C:\Users\loran\PycharmProjects\TIL6010-Assignments\data_dir\processed_data\df_province.to_csv', index = False, header=True)
-df_city.to_csv (r'C:\Users\loran\PycharmProjects\TIL6010-Assignments\data_dir\processed_data\df_city.to_csv', index = False, header=True)
+df_nation.to_csv (r'C:\Users\loran\PycharmProjects\TIL6010-Assignments\data_dir\processed_data\NL_df_nation.to_csv', index = False, header=True)
+df_province.to_csv (r'C:\Users\loran\PycharmProjects\TIL6010-Assignments\data_dir\processed_data\NL_df_province.to_csv', index = False, header=True)
+df_city.to_csv (r'C:\Users\loran\PycharmProjects\TIL6010-Assignments\data_dir\processed_data\NL_df_city.to_csv', index = False, header=True)
 
 ##PART 2 - Simple Data processing
 #1
-df_nation_workplace = df_2020[['workplaces_percent_change_from_baseline']].mean()
-df_nation_parks = df_2020[['parks_percent_change_from_baseline']].mean()
-df_nation_transit_stations = df_2020[['transit_stations_percent_change_from_baseline']].mean()
+df_nation_workplace = df[['workplaces_percent_change_from_baseline']].mean()
+df_nation_parks = df[['parks_percent_change_from_baseline']].mean()
+df_nation_transit_stations = df[['transit_stations_percent_change_from_baseline']].mean()
 print(df_nation_workplace)
 print(df_nation_parks)
 print(df_nation_transit_stations)
 
 #2
-df_province = df_2020[["sub_region_1"]]
+df_province = df[["sub_region_1"]]
 Amount_provinces_total = df_province.count()
 print(Amount_provinces_total)
 
-#3 __> idk yet
-df_province1 = df_2020[["sub_region_1", "workplaces_percent_change_from_baseline"]]
+# #3
+df_province1 = df[["sub_region_1", "workplaces_percent_change_from_baseline"]]
 Amount_provinces = df_province1.value_counts()
 print(Amount_provinces)
 province_highest_value = Amount_provinces.iloc[-1:]
 print('Province with highest workplace is: ' + str(province_highest_value))
 
 #4
-df_workplace_high = df_2020.loc[df_2020.sub_region_1.str.contains("Zeeland", na=False)]
+df_workplace_high = df.loc[df.sub_region_1.str.contains("Zeeland", na=False)]
 print(df_workplace_high)
 
 #5
