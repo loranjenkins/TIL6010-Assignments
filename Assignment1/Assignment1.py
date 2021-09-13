@@ -59,13 +59,13 @@ df = pd.concat([df_2020,df_2021])
 print(df.iloc[-10:])
 
 #bulletpoint 6 just with standard df 2020
-df_nation = df[['country_region_code','country_region']]
+df_nation = df.get('country_region_code','country_region')
 df_nation = df_nation.iloc[0:5:]
 
-df_province = df[["sub_region_1"]]
+df_province = df.get("sub_region_1")
 df_province = df_province.iloc[0:5:]
 
-df_city= df[["sub_region_2"]]
+df_city= df.get("sub_region_2")
 df_city = df_city.iloc[0:5:]
 
 print(df_nation.isna())
